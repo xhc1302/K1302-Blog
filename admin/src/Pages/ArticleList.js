@@ -17,12 +17,12 @@ function ArticleList(props) {
         axios({
             method: 'get',
             url: servicePath.getArticleList,
-            withCredentials: true,
+            // withCredentials: true,
             header: { 'Access-Control-Allow-Origin': '*' }
         }).then(
             res => {
                 setList(res.data.list)
-                console.log(res.data.list)
+                // console.log(res.data.list)
             }
         )
     }
@@ -33,7 +33,7 @@ function ArticleList(props) {
             title: '确定要删除这篇博客文章吗?',
             content: '如果你点击OK按钮，文章将会永远被删除，无法恢复。',
             onOk() {
-                axios(servicePath.delArticle + id, { withCredentials: true }).then(
+                axios(servicePath.delArticle + id).then(
                     res => {
                         message.success('文章删除成功')
                         getList()

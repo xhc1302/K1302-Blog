@@ -35,7 +35,7 @@ function Login(props){
             method: 'post',
             url: servicePath.checkLogin,
             data: dataProps,
-            withCredentials: true
+            // withCredentials: true
         }).then(
             res => {
                 setIsLoading(false)

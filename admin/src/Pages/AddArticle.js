@@ -65,7 +65,7 @@ function AddArticle(props){
             method: 'get',
             url: servicePath.getTypeInfo,
             header: { 'Access-Control-Allow-Origin': '*' },
-            withCredentials: true
+            // withCredentials: true
         }).then(res => {
             setTypeInfo(res.data.data)
         })
@@ -74,11 +74,10 @@ function AddArticle(props){
     // //从中台得到文章信息
     const getArticleById = (id) => {
         axios(servicePath.getArticleById + id, {
-            withCredentials: true,
+            // withCredentials: true,
             header: { 'Access-Control-Allow-Origin': '*' }
         }).then(
             res => {
-                console.log(res.data)
                 setArticleTitle(res.data.data[0].title)
                 setArticleContent(res.data.data[0].article_content)
                 let html = marked(res.data.data[0].article_content)
@@ -131,7 +130,7 @@ function AddArticle(props){
                 url: servicePath.addArticle,
                 header: { 'Access-Control-Allow-Origin': '*' },
                 data: dataProps,
-                withCredentials: true
+                // withCredentials: true
             }).then(
                 res => {
                     if (res.data.isScuccess) {
@@ -149,7 +148,7 @@ function AddArticle(props){
                 url: servicePath.updateArticle,
                 header: { 'Access-Control-Allow-Origin': '*' },
                 data: dataProps,
-                withCredentials: true
+                // withCredentials: true
             }).then(
                 res => {
                     if (res.data.isScuccess) {
