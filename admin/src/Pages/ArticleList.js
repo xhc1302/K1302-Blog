@@ -22,7 +22,6 @@ function ArticleList(props) {
         }).then(
             res => {
                 setList(res.data.list)
-                // console.log(res.data.list)
             }
         )
     }

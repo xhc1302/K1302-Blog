@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 import 'antd/dist/antd.css';
 import '../static/css/Login.css';
 import { Card, Input, Button, Spin, message } from 'antd';
@@ -16,15 +16,9 @@ function Login(props){
         setIsLoading(true)
         if (!userName) {
             message.error('用户名不能为空')
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500)
             return false
         } else if (!password) {
             message.error('密码不能为空')
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500)
             return false
         }
         let dataProps = {
@@ -35,12 +29,12 @@ function Login(props){
             method: 'post',
             url: servicePath.checkLogin,
             data: dataProps,
+            header:{ 'Access-Control-Allow-Origin':'*' },
             // withCredentials: true
         }).then(
             res => {
                 setIsLoading(false)
                 if (res.data.data === '登录成功') {
-                    // localStorage.setItem('openId', res.data.openId)
                     props.history.push('/index')
                 } else {
                     message.error('用户名密码错误')
@@ -55,7 +49,6 @@ function Login(props){
 
     return (
         <div className="login-div">
-
             <Spin tip="Loading..." spinning={isLoading}>
                 <Card title="K1302's Messy Space" bordered={true} style={{ width: 400 }} >
                     <Input

@@ -5,7 +5,6 @@ const Controller = require('egg').Controller
 class MainController extends Controller{
 
     async index(){
-        //首页的文章列表数据
         this.ctx.body='hi admin index'
     }
 
@@ -21,14 +20,30 @@ class MainController extends Controller{
 
         if(res.length>0){
             //登录成功,进行session缓存
-            let openId=new Date().getTime()
-            this.ctx.session.openId={ 'openId':openId }
-            this.ctx.body={'data':'登录成功','openId':openId}
-            this.ctx.body={'data':'登录成功','openId':openId}
-
+            // let openId=new Date().getTime()
+            // this.ctx.session.openId={ 'openId':openId }
+            // this.ctx.body={'data':'登录成功','openId':openId}
+            this.ctx.body={'data':'登录成功'}
+            
         }else{
             this.ctx.body={data:'登录失败'}
         } 
+    }
+
+    //退出登录
+    async outLogin(){
+        this.ctx.session.openId=null 
+        this.ctx.body={'data':'退出成功'}
+    }
+
+    async checkOpenId(){
+        let cOpenId = this.ctx.request.body.openId
+        let sOpenId = this.ctx.session.openId
+        if(cOpenId){
+            this.ctx.body={data:'已经登录'}
+        }else{
+            this.ctx.body={data:'没有登录'}
+        }
     }
 
     //后台文章分类信息
@@ -54,7 +69,6 @@ class MainController extends Controller{
         const tmpArticle = this.ctx.request.body
         const result = await this.app.mysql.update('article', tmpArticle);
         const updateSuccess = result.affectedRows === 1;
-        // console.log(updateSuccess)
         this.ctx.body = {
             isScuccess: updateSuccess
         }

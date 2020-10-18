@@ -1,10 +1,12 @@
 import React,{useState} from 'react';
-import { Layout, Menu, Breadcrumb } from 'antd';
-import {PieChartOutlined, DesktopOutlined, FileOutlined } from '@ant-design/icons'
+import { Layout, Menu, Breadcrumb, message} from 'antd';
+import {PieChartOutlined, DesktopOutlined, FileOutlined, LogoutOutlined } from '@ant-design/icons'
 import { Route } from "react-router-dom";
 import AddArticle from './AddArticle'
 import ArticleList from './ArticleList'
 import '../static/css/AdminIndex.css'
+import axios from 'axios'
+import  servicePath  from '../config/apiUrl'
 
 const { Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -14,7 +16,6 @@ function AdminIndex(props){
 
   const [collapsed,setCollapsed] = useState(false)
   const [title,setTitle] = useState("K1302's Messy Space")
-  const [breadVal,setBreadVal] = useState(["后台管理","工作台"])
 
   const onCollapse = collapsed => {
     setCollapsed(collapsed)
@@ -26,16 +27,10 @@ function AdminIndex(props){
     
   };
 
-  const handleClickSidebar = e =>{
-    if(e.key === 'default') {
-      setBreadVal(["后台管理","工作台"])
-    }
-    if(e.key === 'addArticle') {
-      setBreadVal(["后台管理","文章管理","添加文章"])
+  const handleClickArticle = e=>{
+    if(e.key=='addArticle'){
       props.history.push('/index/add')
-    }
-    if(e.key === 'listArticle') {
-      setBreadVal(["后台管理","文章管理","文章列表"])
+    }else{
       props.history.push('/index/list')
     }
   }
@@ -45,11 +40,12 @@ function AdminIndex(props){
         <Sider  collapsible collapsed={collapsed} onCollapse={onCollapse}>
           <div className="logo">{title}</div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="default" onClick={handleClickSidebar} >
+            <Menu.Item key="default">
               <PieChartOutlined />
               <span>工作台</span>
             </Menu.Item>
             <SubMenu
+              onClick={handleClickArticle}
               title={
                 <span>
                   <DesktopOutlined />
@@ -57,8 +53,8 @@ function AdminIndex(props){
                 </span>
               }
             >
-              <Menu.Item key="addArticle" onClick={handleClickSidebar}>添加文章</Menu.Item>
-              <Menu.Item key="listArticle" onClick={handleClickSidebar}>文章列表</Menu.Item>
+              <Menu.Item key="addArticle" >添加文章</Menu.Item>
+              <Menu.Item key="listArticle" >文章列表</Menu.Item>
 
             </SubMenu>
 
@@ -66,25 +62,25 @@ function AdminIndex(props){
               <FileOutlined />
               <span>留言管理</span>
             </Menu.Item>
+
+            <Menu.Item key="logoff" >
+              <LogoutOutlined />
+              <span>退出登录</span>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout>
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              {
-                breadVal.map((item,index)=>{
-                  return (
-                    <Breadcrumb.Item key={index+item}>{item}</Breadcrumb.Item>
-                  )
-                })
-              }
+              <Breadcrumb.Item>后台管理</Breadcrumb.Item>
+              <Breadcrumb.Item>工作台</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ padding: 24, background: '#fff', minHeight: 360 }}> 
                 <div>
                   <Route path="/index/" exact component={AddArticle} />
                   <Route path="/index/add/" exact component={AddArticle} />
                   <Route path="/index/add/:id" exact component={AddArticle} />
-                  <Route path="/index/list/" exact component={ArticleList} />
+                  <Route path="/index/list/"  component={ArticleList} />
                 </div>
             </div>
           </Content>
