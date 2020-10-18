@@ -1,6 +1,6 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import Head from 'next/head'
-import {Row, Col, Affix, Breadcrumb } from 'antd'
+import {Row, Col, Affix, Breadcrumb, Skeleton} from 'antd'
 import { CalendarOutlined, FolderOutlined, FireOutlined } from '@ant-design/icons'
 import Header from '../components/Header'
 import Author from '../components/Author'
@@ -11,14 +11,31 @@ import hljs from "highlight.js";
 import Tocify from '../components/tocify.tsx'
 import axios from 'axios'
 import  servicePath  from '../config/apiUrl'
-import { resolve } from 'path'
-import Item from 'antd/lib/list/Item'
+import CountUp from 'react-countup'
 
 const Detailed = (props) =>{
 
   let articleContent=props.article_content
 
-  const tocify = new Tocify()
+  const [content,setContent] = useState(props.article_content)
+  const [introduce,setIntroduce] = useState(props.introduce)
+  const [tocify,setTocify] = useState(new Tocify())
+  const [loading,setLoading] = useState(true)
+
+  useEffect( ()=>{
+    setTimeout(()=>{
+      myFuction()
+    },100)
+  },[])
+
+  const myFuction = async ()=>{
+    let content = await marked(props.article_content)
+    let introduce = await marked(props.introduce)
+    setContent(content)
+    setIntroduce(introduce)
+    setLoading(false)
+  }
+
   const renderer = new marked.Renderer();
     renderer.heading = function(text, level, raw) {
       const anchor = tocify.add(text, level);
@@ -26,9 +43,7 @@ const Detailed = (props) =>{
     };
 
   marked.setOptions({
-
     renderer: renderer,
-
     gfm: true,
     pedantic: false,
     sanitize: false,
@@ -43,13 +58,12 @@ const Detailed = (props) =>{
 
   }); 
 
-  let html = marked(props.article_content) 
-
   return (
     <div>
       <Head>
-        <link rel="icon" href="/static/k1302.svg" sizes="32x32" />
         <title>K1302</title>
+        <meta name="description" content="K1302's Messy Place"></meta>
+        <link rel="icon" href="/static/k1302.svg" sizes="32x32" type="image/x-icon" />
       </Head>
       <Header />
       <Row className="comm-main" justify="center">
@@ -59,7 +73,7 @@ const Detailed = (props) =>{
                 <Breadcrumb>
                   <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
                   <Breadcrumb.Item>{props.typeName}</Breadcrumb.Item>
-                  <Breadcrumb.Item> {props.title}</Breadcrumb.Item>
+                  <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
                 </Breadcrumb>
               </div>
 
@@ -71,13 +85,15 @@ const Detailed = (props) =>{
                 <div className="list-icon center">
                   <span><CalendarOutlined /> {props.addTime}</span>
                   <span><FolderOutlined /> {props.typeName}</span>
-                  <span><FireOutlined /> {props.view_count}</span>
+                  <span><FireOutlined /> <CountUp end={props.view_count} />人</span>
                 </div>
 
                 <div className="detailed-content"  
-                  dangerouslySetInnerHTML = {{__html:html}}   >
+                  dangerouslySetInnerHTML = {{__html:introduce}}>
                 </div>
-
+                <div className="detailed-content"  
+                  dangerouslySetInnerHTML = {{__html:content}}>
+                </div>
              </div>
             </div>
         </Col>
@@ -88,6 +104,7 @@ const Detailed = (props) =>{
           <Affix offsetTop={5}>
             <div className="detailed-nav comm-box">
               <div className="nav-title">文章目录</div>
+              <Skeleton loading={loading} active paragraph={{ rows: 6 }} ></Skeleton>
               <div className="toc-list">
                 {tocify && tocify.render()}
               </div>

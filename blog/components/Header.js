@@ -1,23 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Router from 'next/router'
-import axios from 'axios'
-import { HomeOutlined } from '@ant-design/icons'
-import  servicePath  from '../config/apiUrl'
+import Link from 'next/link'
+import { HomeOutlined, AppstoreOutlined, UserOutlined ,DollarCircleOutlined } from '@ant-design/icons'
 import { Row, Col, Menu } from 'antd'
 import '../styles/components/header.css'
 
-const Header = (props) => {
-    const [navArray , setNavArray] = useState([])
-    useEffect(()=>{
-        const fetchData = async ()=>{
-            await axios(servicePath.getTypeInfo).then(
-                (res)=>{
-                    setNavArray(res.data.data)
-                }
-            )
-        }
-        fetchData()
-    },[])
+const Header = () => {
 
     //跳转到列表页
    const handleClick = (e)=>{
@@ -30,10 +18,14 @@ const Header = (props) => {
     return (
     <div className="header">
         <div className="header-center">
-            <Row type="flex" justify="center">
+            <Row justify="center">
                 <Col xs={24} sm={24} md={13}>
-                    <span className="header-logo">K1302</span>
-                    <span className="header-txt">Don't say so much。</span>
+                    <span className="header-logo">
+                        <Link href={{pathname:'/'}}>
+                            <a>K1302</a>
+                        </Link>
+                    </span>
+                    <span className="header-txt">Don't say so much</span>
                 </Col>
 
                 <Col className="memu-div" xs={0} sm={0} md={11}>
@@ -41,15 +33,15 @@ const Header = (props) => {
                         <Menu.Item key="home" icon={<HomeOutlined />}>
                             首页
                         </Menu.Item>
-                        {
-                            navArray.map((item) => {
-                                return (
-                                    <Menu.Item key={item.id} >
-                                        {item.typeName}
-                                    </Menu.Item>
-                                )
-                            })
-                        }
+                        <Menu.Item key="0" icon={<AppstoreOutlined />}>
+                            大杂烩
+                        </Menu.Item>
+                        <Menu.Item key="1" icon={<UserOutlined />}>
+                            他人之长
+                        </Menu.Item>
+                        <Menu.Item key="2" icon={<DollarCircleOutlined />}>
+                            白日梦
+                        </Menu.Item>
                     </Menu>
                 </Col>
             </Row>
